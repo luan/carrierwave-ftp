@@ -2,6 +2,7 @@
 *.rbc
 .bundle
 .config
-tmp
+tmp/
 Gemfile.lock
 .ftp
+pkg/
