@@ -26,7 +26,8 @@ describe CarrierWave::Storage::FTP do
     ftp_params = [
       'ftp.testcarrierwave.dev',
       'test_user',
-      'test_passwd'
+      'test_passwd',
+      21
     ]
 
     Net::FTP.should_receive(:open).with(*ftp_params).and_return(ftp)

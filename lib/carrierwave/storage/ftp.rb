@@ -73,7 +73,7 @@ module CarrierWave
         end
 
         def connection
-          ftp = ExFTP.open(@uploader.ftp_host, @uploader.ftp_user, @uploader.ftp_passwd)
+          ftp = ExFTP.open(@uploader.ftp_host, @uploader.ftp_user, @uploader.ftp_passwd, @uploader.ftp_port)
           yield ftp
           ftp.close
         end
