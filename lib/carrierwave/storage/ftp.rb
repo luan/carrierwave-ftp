@@ -10,6 +10,10 @@ module CarrierWave
         f
       end
 
+      def retrieve!(identifier)
+        CarrierWave::Storage::FTP::File.new(uploader, self, uploader.store_path(identifier))
+      end
+
       class File
         attr_reader :path
 
