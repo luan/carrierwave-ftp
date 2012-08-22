@@ -14,9 +14,11 @@ Require it in your code:
 
 Or, in Rails you can add it to your Gemfile:
 
-    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp'
+    gem 'carrierwave-ftp', :require => 'carrierwave/storage/all' # both FTP/SFTP
+    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp' # FTP only
+    gem 'carrierwave-ftp', :require => 'carrierwave/storage/sftp' # SFTP only
 
-## Getting Started
+## Getting Started (FTP)
 
 First configure CarrierWave with your FTP credentials:
 
@@ -36,5 +38,30 @@ And then in your uploader, set the storage to `:ftp`:
 ```ruby
 class AvatarUploader < CarrierWave::Uploader::Base
   storage :ftp
+end
+```
+
+## Getting Started (SFTP)
+
+First configure CarrierWave with your SFTP credentials:
+
+```ruby
+CarrierWave.configure do |config|
+  config.sftp_host = "example.com"
+  config.sftp_user = "example"
+  config.sftp_folder = "public_html/uploads"
+  config.sftp_url = "http://example.com/uploads"
+  config.sftp_options = {
+    :password => "secret",
+    :port     => 22
+  }
+end
+```
+
+And then in your uploader, set the storage to `:sftp`:
+
+```ruby
+class AvatarUploader < CarrierWave::Uploader::Base
+  storage :sftp
 end
 ```
