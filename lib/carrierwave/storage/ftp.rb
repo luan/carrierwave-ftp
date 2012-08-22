@@ -78,6 +78,7 @@ module CarrierWave
 
         def connection
           ftp = ExFTP.open(@uploader.ftp_host, @uploader.ftp_user, @uploader.ftp_passwd, @uploader.ftp_port)
+          ftp.passive = @uploader.ftp_passive
           yield ftp
           ftp.close
         end
@@ -95,6 +96,7 @@ class CarrierWave::Uploader::Base
   add_config :ftp_passwd
   add_config :ftp_folder
   add_config :ftp_url
+  add_config :ftp_passive
 
   configure do |config|
     config.storage_engines[:ftp] = "CarrierWave::Storage::FTP"
@@ -104,5 +106,6 @@ class CarrierWave::Uploader::Base
     config.ftp_passwd = ""
     config.ftp_folder = "/"
     config.ftp_url = "http://localhost"
+    config.ftp_passive = false
   end
 end

@@ -14,6 +14,7 @@ describe CarrierWave::Storage::FTP do
       config.ftp_passwd = 'test_passwd'
       config.ftp_folder = '~/public_html'
       config.ftp_url = 'http://testcarrierwave.dev'
+      config.ftp_passive = true
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
@@ -31,6 +32,7 @@ describe CarrierWave::Storage::FTP do
     ]
 
     Net::FTP.should_receive(:open).with(*ftp_params).and_return(ftp)
+    ftp.should_receive(:passive=).with(true)
     ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
     ftp.should_receive(:chdir).with('~/public_html/uploads')
     ftp.should_receive(:put).with(@file.path, 'test.jpg')
@@ -42,6 +44,7 @@ describe CarrierWave::Storage::FTP do
     before do
       ftp = double(:ftp_connection)
       Net::FTP.stub(:open).and_return(ftp)
+      ftp.stub(:passive=)
       ftp.stub(:mkdir_p)
       ftp.stub(:chdir)
       ftp.stub(:put)
@@ -62,6 +65,7 @@ describe CarrierWave::Storage::FTP do
     before do
       @ftp = double(:ftp_connection)
       Net::FTP.stub(:open).and_return(@ftp)
+      @ftp.stub(:passive=)
       @ftp.stub(:mkdir_p)
       @ftp.stub(:chdir)
       @ftp.stub(:put)
