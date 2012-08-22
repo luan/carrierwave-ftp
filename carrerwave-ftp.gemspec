@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{FTP support for CarrierWave}
   s.description = %q{Allows file upload using FTP for CarrierWave uploaders.}
 
-  s.rubyforge_project = "carrierwave-mongoid"
+  s.rubyforge_project = "carrierwave-ftp"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "carrierwave", ["~> 0.6.2"]
+  s.add_dependency "net-sftp", ["~> 2.0.5"]
   s.add_development_dependency "rspec", ["~> 2.6"]
   s.add_development_dependency "rake", ["~> 0.9"]
 end
