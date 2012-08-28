@@ -75,7 +75,7 @@ module CarrierWave
 
         def file
           require 'net/http'
-          url = URI.parse(url)
+          url = URI.parse(self.url)
           req = Net::HTTP::Get.new(url.path)
           Net::HTTP.start(url.host, url.port) do |http|
             http.request(req)
