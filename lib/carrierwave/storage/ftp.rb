@@ -53,7 +53,15 @@ module CarrierWave
         end
 
         def read
-          http_get_body(url)
+          file.body
+        end
+
+        def content_type
+          @content_type || file.content_type
+        end
+
+        def content_type=(new_content_type)
+          @content_type = new_content_type
         end
 
         def delete
@@ -65,15 +73,13 @@ module CarrierWave
 
         private
 
-        def http_get_body(url)
+        def file
           require 'net/http'
           url = URI.parse(url)
           req = Net::HTTP::Get.new(url.path)
-          res = Net::HTTP.start(url.host, url.port) do |http|
+          Net::HTTP.start(url.host, url.port) do |http|
             http.request(req)
           end
-
-          res.body
         end
 
         def connection

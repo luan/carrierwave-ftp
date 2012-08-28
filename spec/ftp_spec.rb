@@ -90,8 +90,13 @@ describe CarrierWave::Storage::FTP do
     end
 
     it "returns the content of the file" do
-      @stored.should_receive(:http_get_body).with(@stored.url).and_return('some content')
+      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
       @stored.read.should == 'some content'
+    end
+
+    it "returns the content_type of the file" do
+      @stored.should_receive(:file).and_return(Struct.new(:content_type).new('some/type'))
+      @stored.content_type.should == 'some/type'
     end
   end
 end
