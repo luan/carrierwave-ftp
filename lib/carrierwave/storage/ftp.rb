@@ -80,6 +80,7 @@ module CarrierWave
           Net::HTTP.start(url.host, url.port) do |http|
             http.request(req)
           end
+        rescue
         end
 
         def connection
