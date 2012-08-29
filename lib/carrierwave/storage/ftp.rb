@@ -69,6 +69,7 @@ module CarrierWave
             ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
             ftp.delete(filename)
           end
+        rescue
         end
 
         private

@@ -66,6 +66,7 @@ module CarrierWave
           connection do |sftp|
             sftp.remove!(full_path)
           end
+        rescue
         end
 
         private
