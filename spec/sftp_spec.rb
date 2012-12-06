@@ -82,8 +82,7 @@ describe CarrierWave::Storage::SFTP do
     end
 
     it "returns the size of the file" do
-      @sftp.should_receive(:stat!).with('/home/test_user/public_html/uploads/test.jpg')
-          .and_return(Struct.new(:size).new(14))
+      @sftp.should_receive(:stat!).with('/home/test_user/public_html/uploads/test.jpg').and_return(Struct.new(:size).new(14))
       @stored.size.should == 14
     end
 
