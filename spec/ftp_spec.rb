@@ -18,7 +18,7 @@ describe CarrierWave::Storage::FTP do
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
-    FtpUploader.stub!(:store_path).and_return('uploads/test.jpg')
+    FtpUploader.stub(:store_path).and_return('uploads/test.jpg')
     @storage = CarrierWave::Storage::FTP.new(FtpUploader)
   end
 

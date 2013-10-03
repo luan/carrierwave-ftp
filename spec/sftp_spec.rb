@@ -20,7 +20,7 @@ describe CarrierWave::Storage::SFTP do
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
-    SftpUploader.stub!(:store_path).and_return('uploads/test.jpg')
+    SftpUploader.stub(:store_path).and_return('uploads/test.jpg')
     @storage = CarrierWave::Storage::SFTP.new(SftpUploader)
   end
 
