@@ -52,6 +52,11 @@ describe CarrierWave::Storage::SFTP do
       @stored = @storage.store!(@file)
     end
 
+    it "should use the calculated URL when retrieving a file" do
+      @stored.should_receive(:url).and_return('http://example.com/')
+      @stored.read
+    end
+
     it "returns a url based on directory" do
       @stored.url.should == 'http://testcarrierwave.dev/uploads/test.jpg'
     end
