@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/luan/carrierwave-ftp.png?branch=master)](https://travis-ci.org/luan/carrierwave-ftp)
 [![Code Climate](https://codeclimate.com/github/luan/carrierwave-ftp.png)](https://codeclimate.com/github/luan/carrierwave-ftp)
-[![Build Status](https://travis-ci.org/luan/carrierwave-ftp.png?branch=master)](https://travis-ci.org/luan/carrierwave-ftp)
+[![Dependency Status](https://gemnasium.com/luan/carrierwave-ftp.png)](https://gemnasium.com/luan/carrierwave-ftp)
 
 This gem adds support for FTP upload to [CarrierWave](https://github.com/jnicklas/carrierwave/)
 
