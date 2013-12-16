@@ -91,6 +91,11 @@ describe CarrierWave::Storage::SFTP do
       @stored.size.should == 14
     end
 
+    it "returns to_file" do
+      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
+      @stored.to_file.size.should == 'some content'.length
+    end
+
     it "returns the content of the file" do
       @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
       @stored.read.should == 'some content'
