@@ -34,7 +34,7 @@ CarrierWave.configure do |config|
   config.ftp_passwd = "secret"
   config.ftp_folder = "/public_html/uploads"
   config.ftp_url = "http://example.com/uploads"
-  config.passive = false # false by default
+  config.ftp_passive = false # false by default
 end
 ```
 
