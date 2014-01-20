@@ -36,6 +36,13 @@ module CarrierWave
           url.gsub(/.*\/(.*?$)/, '\1')
         end
 
+        def to_file
+          temp_file = Tempfile.new(filename)
+          temp_file.binmode
+          temp_file.write file.body
+          temp_file
+        end
+
         def size
           size = nil
 
