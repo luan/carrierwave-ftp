@@ -2,17 +2,12 @@ require 'net/sftp'
 
 class Net::SFTP::Session
   def mkdir_p!(dir)
-    parts = dir.split("/")
-    growing_path = ""
+    parts = dir.split(File::SEPARATOR)
+    growing_parts = []
     for part in parts
-      next if part == ""
-      if growing_path == ""
-        growing_path = part
-      else
-        growing_path = File.join(growing_path, part)
-      end
+      growing_parts.push(part)
       begin
-        mkdir!(growing_path)
+        mkdir!(File.join(growing_parts))
       rescue
       end
     end
