@@ -31,7 +31,9 @@ describe CarrierWave::Storage::FTP do
       21
     ]
 
-    Net::FTP.should_receive(:open).with(*ftp_params).and_return(ftp)
+    Net::FTP.should_receive(:new).and_return(ftp)
+    ftp.should_receive(:connect).with('ftp.testcarrierwave.dev', 21)
+    ftp.should_receive(:login).with('test_user', 'test_passwd')
     ftp.should_receive(:passive=).with(true)
     ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
     ftp.should_receive(:chdir).with('~/public_html/uploads')
@@ -43,7 +45,9 @@ describe CarrierWave::Storage::FTP do
   describe 'after upload' do
     before do
       ftp = double(:ftp_connection)
-      Net::FTP.stub(:open).and_return(ftp)
+      Net::FTP.stub(:new).and_return(ftp)
+      ftp.stub(:connect)
+      ftp.stub(:login)
       ftp.stub(:passive=)
       ftp.stub(:mkdir_p)
       ftp.stub(:chdir)
@@ -64,7 +68,9 @@ describe CarrierWave::Storage::FTP do
   describe 'other operations' do
     before do
       @ftp = double(:ftp_connection)
-      Net::FTP.stub(:open).and_return(@ftp)
+      Net::FTP.stub(:new).and_return(@ftp)
+      @ftp.stub(:connect)
+      @ftp.stub(:login)
       @ftp.stub(:passive=)
       @ftp.stub(:mkdir_p)
       @ftp.stub(:chdir)
