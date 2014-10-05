@@ -94,14 +94,14 @@ module CarrierWave
         def connection
           ftp = ExFTP.new
           ftp.connect(@uploader.ftp_host, @uploader.ftp_port)
-          
+
           begin
             ftp.passive = @uploader.ftp_passive
             ftp.login(@uploader.ftp_user, @uploader.ftp_passwd)
-          
+
             yield ftp
           ensure
-            ftp.close
+            ftp.quit
           end
         end
       end

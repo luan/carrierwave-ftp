@@ -38,7 +38,7 @@ describe CarrierWave::Storage::FTP do
     ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
     ftp.should_receive(:chdir).with('~/public_html/uploads')
     ftp.should_receive(:put).with(@file.path, 'test.jpg')
-    ftp.should_receive(:close)
+    ftp.should_receive(:quit)
     @stored = @storage.store!(@file)
   end
 
@@ -52,7 +52,7 @@ describe CarrierWave::Storage::FTP do
       ftp.stub(:mkdir_p)
       ftp.stub(:chdir)
       ftp.stub(:put)
-      ftp.stub(:close)
+      ftp.stub(:quit)
       @stored = @storage.store!(@file)
     end
 
@@ -75,7 +75,7 @@ describe CarrierWave::Storage::FTP do
       @ftp.stub(:mkdir_p)
       @ftp.stub(:chdir)
       @ftp.stub(:put)
-      @ftp.stub(:close)
+      @ftp.stub(:quit)
       @stored = @storage.store!(@file)
     end
 
