@@ -70,6 +70,13 @@ module CarrierWave
         def content_type=(new_content_type)
           @content_type = new_content_type
         end
+        
+        def rename(newname)
+          connection do |ftp|
+            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.rename(filename, newname)
+          end
+        end
 
         def delete
           connection do |ftp|
