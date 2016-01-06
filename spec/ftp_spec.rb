@@ -96,12 +96,14 @@ describe CarrierWave::Storage::FTP do
     end
 
     it "returns to_file" do
-      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
+      @ftp.should_receive(:chdir).with('~/public_html/uploads')
+      @ftp.should_receive(:get).with('test.jpg', nil).and_yield('some content')
       @stored.to_file.size.should == 'some content'.length
     end
 
     it "returns the content of the file" do
-      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
+      @ftp.should_receive(:chdir).with('~/public_html/uploads')
+      @ftp.should_receive(:get).with('test.jpg', nil).and_yield('some content')
       @stored.read.should == 'some content'
     end
 

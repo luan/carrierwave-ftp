@@ -40,7 +40,13 @@ module CarrierWave
         def to_file
           temp_file = Tempfile.new(filename)
           temp_file.binmode
-          temp_file.write file.body
+          connection do |ftp|
+            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.get(filename, nil) do |data|
+              temp_file.write(data)
+            end
+          end
+          temp_file.rewind
           temp_file
         end
 
@@ -60,7 +66,10 @@ module CarrierWave
         end
 
         def read
-          file.body
+          file = to_file
+          content = file.read
+          file.close
+          content
         end
 
         def content_type
@@ -80,16 +89,6 @@ module CarrierWave
         end
 
         private
-
-        def file
-          require 'net/http'
-          url = URI.parse(self.url)
-          req = Net::HTTP::Get.new(url.path)
-          Net::HTTP.start(url.host, url.port) do |http|
-            http.request(req)
-          end
-        rescue
-        end
 
         def connection
           ftp = ExFTP.new
