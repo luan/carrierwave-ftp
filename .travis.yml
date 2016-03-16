@@ -1,5 +1,8 @@
 language: ruby
 
+pre:
+ - gem update bundler
+
 cache: bundler
 
 rvm:
