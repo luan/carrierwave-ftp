@@ -1,5 +1,14 @@
 language: ruby
+
+cache: bundler
+
 rvm:
-  - 2.0.0
-  - 1.9.3
-  - jruby-19mode
+ - 2.0
+ - 2.1
+ - 2.2.3
+ - ruby-head
+ - jruby
+ - jruby-head
+
+env:
+  - JRUBY_OPTS="--2.0"
