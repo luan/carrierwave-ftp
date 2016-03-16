@@ -82,7 +82,7 @@ module CarrierWave
         private
 
         def use_ssl?
-          @uploader.sftp_url.start_with?('https')
+          @uploader.ftp_url.start_with?('https')
         end  
 
         def file
