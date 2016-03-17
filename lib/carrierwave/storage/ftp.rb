@@ -81,11 +81,15 @@ module CarrierWave
 
         private
 
+        def use_ssl?
+          @uploader.ftp_url.start_with?('https')
+        end  
+
         def file
           require 'net/http'
           url = URI.parse(self.url)
           req = Net::HTTP::Get.new(url.path)
-          Net::HTTP.start(url.host, url.port) do |http|
+          Net::HTTP.start(url.host, url.port, :use_ssl => use_ssl?) do |http|
             http.request(req)
           end
         rescue
