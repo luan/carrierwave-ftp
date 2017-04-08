@@ -39,7 +39,10 @@ module CarrierWave
         def to_file
           temp_file = Tempfile.new(filename)
           temp_file.binmode
-          temp_file.write file.body
+          connection do |sftp|
+            sftp.download!(full_path, temp_file)
+          end
+          temp_file.rewind
           temp_file
         end
 
@@ -58,7 +61,10 @@ module CarrierWave
         end
 
         def read
-          file.body
+          file = to_file
+          content = file.read
+          file.close
+          content
         end
 
         def content_type
@@ -80,19 +86,10 @@ module CarrierWave
 
         def use_ssl?
           @uploader.sftp_url.start_with?('https')
-        end  
+        end
 
         def full_path
           "#{@uploader.sftp_folder}/#{path}"
-        end
-
-        def file
-          require 'net/http'
-          url = URI.parse(self.url)
-          req = Net::HTTP::Get.new(url.path)
-          Net::HTTP.start(url.host, url.port, :use_ssl => use_ssl?) do |http|
-            http.request(req)
-          end
         end
 
         def connection

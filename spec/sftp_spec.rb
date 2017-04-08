@@ -44,16 +44,16 @@ describe CarrierWave::Storage::SFTP do
 
   describe 'after upload' do
     before do
-      sftp = double(:sftp_connection)
-      Net::SFTP.stub(:start).and_return(sftp)
-      sftp.stub(:mkdir_p!)
-      sftp.stub(:upload!)
-      sftp.stub(:close_channel)
+      @sftp = double(:sftp_connection)
+      Net::SFTP.stub(:start).and_return(@sftp)
+      @sftp.stub(:mkdir_p!)
+      @sftp.stub(:upload!)
+      @sftp.stub(:close_channel)
       @stored = @storage.store!(@file)
     end
 
-    it "should use the calculated URL when retrieving a file" do
-      @stored.should_receive(:url).and_return('http://example.com/')
+    it "should use the ftp when retrieving a file" do
+      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
       @stored.read
     end
 
@@ -97,13 +97,13 @@ describe CarrierWave::Storage::SFTP do
     end
 
     it "returns to_file" do
-      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
-      @stored.to_file.size.should == 'some content'.length
+      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
+      @stored.to_file.size.should == 0
     end
 
     it "returns the content of the file" do
-      @stored.should_receive(:file).and_return(Struct.new(:body).new('some content'))
-      @stored.read.should == 'some content'
+      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
+      @stored.read.should == ''
     end
 
     it "returns the content_type of the file" do
