@@ -57,11 +57,6 @@ describe CarrierWave::Storage::SFTP do
       @stored.read
     end
 
-    it "should read file over https" do
-      @stored.should_receive(:url).and_return('https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Ruby_logo.svg/100px-Ruby_logo.svg.png')
-      @stored.read
-    end
-
     it "returns a url based on directory" do
       @stored.url.should == 'http://testcarrierwave.dev/uploads/test.jpg'
     end
