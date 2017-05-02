@@ -53,13 +53,13 @@ First configure CarrierWave with your FTPTLS credentials:
 
 ```ruby
 CarrierWave.configure do |config|
-  config.ftp_host = "ftp.example.com"
-  config.ftp_port = 21
-  config.ftp_user = "example"
-  config.ftp_passwd = "secret"
-  config.ftp_folder = "/public_html/uploads"
-  config.ftp_url = "http://example.com/uploads"
-  config.ftp_passive = true # true by default
+  config.ftptls_host = "ftp.example.com"
+  config.ftptls_port = 21
+  config.ftptls_user = "example"
+  config.ftptls_passwd = "secret"
+  config.ftptls_folder = "/public_html/uploads"
+  config.ftptls_url = "http://example.com/uploads"
+  config.ftptls_passive = true # true by default
 end
 ```
 
