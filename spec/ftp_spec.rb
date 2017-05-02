@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'carrierwave/storage/ftp'
 
-class FtpTlsUploader < CarrierWave::Uploader::Base
+class FtpUploader < CarrierWave::Uploader::Base
   storage :ftp
 end
 
