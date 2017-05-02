@@ -1,28 +1,28 @@
 require 'spec_helper'
-require 'carrierwave/storage/ftp'
+require 'carrierwave/storage/ftptls'
 
-class FtpTlsUploader < CarrierWave::Uploader::Base
-  storage :ftp
+class FtpUploader < CarrierWave::Uploader::Base
+  storage :ftptls
 end
 
-describe CarrierWave::Storage::FTP do
+describe CarrierWave::Storage::FTPTLS do
   before do
     CarrierWave.configure do |config|
       config.reset_config
-      config.ftp_host = 'ftp.testcarrierwave.dev'
-      config.ftp_user = 'test_user'
-      config.ftp_passwd = 'test_passwd'
-      config.ftp_folder = '~/public_html'
-      config.ftp_url = 'http://testcarrierwave.dev'
-      config.ftp_passive = true
+      config.ftptls_host = 'ftp.testcarrierwave.dev'
+      config.ftptls_user = 'test_user'
+      config.ftptls_passwd = 'test_passwd'
+      config.ftptls_folder = '~/public_html'
+      config.ftptls_url = 'http://testcarrierwave.dev'
+      config.ftptls_passive = true
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
     FtpUploader.stub(:store_path).and_return('uploads/test.jpg')
-    @storage = CarrierWave::Storage::FTP.new(FtpUploader)
+    @storage = CarrierWave::Storage::FTPTLS.new(FtpUploader)
   end
 
-  it "opens/closes an ftp connection to the given host" do
+  it "opens/closes an ftptls connection to the given host" do
     ftp = double(:ftp_connection)
     ftp_params = [
       'ftp.testcarrierwave.dev',
@@ -33,6 +33,7 @@ describe CarrierWave::Storage::FTP do
 
     Net::FTP.should_receive(:new).and_return(ftp)
     ftp.should_receive(:connect).with('ftp.testcarrierwave.dev', 21)
+    ftp.should_receive(:ssl_context=)
     ftp.should_receive(:login).with('test_user', 'test_passwd')
     ftp.should_receive(:passive=).with(true)
     ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
@@ -47,6 +48,7 @@ describe CarrierWave::Storage::FTP do
       ftp = double(:ftp_connection)
       Net::FTP.stub(:new).and_return(ftp)
       ftp.stub(:connect)
+      ftp.stub(:ssl_context=)
       ftp.stub(:login)
       ftp.stub(:passive=)
       ftp.stub(:mkdir_p)
@@ -70,6 +72,7 @@ describe CarrierWave::Storage::FTP do
       @ftp = double(:ftp_connection)
       Net::FTP.stub(:new).and_return(@ftp)
       @ftp.stub(:connect)
+      @ftp.stub(:ssl_context=)
       @ftp.stub(:login)
       @ftp.stub(:passive=)
       @ftp.stub(:mkdir_p)
