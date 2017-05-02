@@ -20,6 +20,7 @@ Or, in Rails you can add it to your Gemfile:
 
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp/all' # both FTP/SFTP
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp' # FTP only
+    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftptls' # FTPTLS only
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/sftp' # SFTP only
 
 ## Getting Started (FTP)
@@ -43,6 +44,30 @@ And then in your uploader, set the storage to `:ftp`:
 ```ruby
 class AvatarUploader < CarrierWave::Uploader::Base
   storage :ftp
+end
+```
+
+## Getting Started (FTPTLS)
+
+First configure CarrierWave with your FTPTLS credentials:
+
+```ruby
+CarrierWave.configure do |config|
+  config.ftptls_host = "ftp.example.com"
+  config.ftptls_port = 21
+  config.ftptls_user = "example"
+  config.ftptls_passwd = "secret"
+  config.ftptls_folder = "/public_html/uploads"
+  config.ftptls_url = "http://example.com/uploads"
+  config.ftptls_passive = true # true by default
+end
+```
+
+And then in your uploader, set the storage to `:ftp`:
+
+```ruby
+class AvatarUploader < CarrierWave::Uploader::Base
+  storage :ftptls
 end
 ```
 
