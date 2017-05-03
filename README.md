@@ -20,7 +20,6 @@ Or, in Rails you can add it to your Gemfile:
 
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp/all' # both FTP/SFTP
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp' # FTP only
-    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftptls' # FTPTLS only
     gem 'carrierwave-ftp', :require => 'carrierwave/storage/sftp' # SFTP only
 
 ## Getting Started (FTP)
