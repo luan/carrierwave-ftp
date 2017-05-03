@@ -36,6 +36,7 @@ CarrierWave.configure do |config|
   config.ftp_folder = "/public_html/uploads"
   config.ftp_url = "http://example.com/uploads"
   config.ftp_passive = false # false by default
+  config.ftp_tls = false # false by default
 end
 ```
 
@@ -44,30 +45,6 @@ And then in your uploader, set the storage to `:ftp`:
 ```ruby
 class AvatarUploader < CarrierWave::Uploader::Base
   storage :ftp
-end
-```
-
-## Getting Started (FTPTLS)
-
-First configure CarrierWave with your FTPTLS credentials:
-
-```ruby
-CarrierWave.configure do |config|
-  config.ftptls_host = "ftp.example.com"
-  config.ftptls_port = 21
-  config.ftptls_user = "example"
-  config.ftptls_passwd = "secret"
-  config.ftptls_folder = "/public_html/uploads"
-  config.ftptls_url = "http://example.com/uploads"
-  config.ftptls_passive = true # true by default
-end
-```
-
-And then in your uploader, set the storage to `:ftp`:
-
-```ruby
-class AvatarUploader < CarrierWave::Uploader::Base
-  storage :ftptls
 end
 ```
 
