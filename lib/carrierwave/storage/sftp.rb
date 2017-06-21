@@ -42,6 +42,7 @@ module CarrierWave
           connection do |sftp|
             sftp.download!(full_path, temp_file)
           end
+          temp_file.open
           temp_file.rewind
           temp_file
         end
