@@ -1,5 +1,6 @@
 require 'carrierwave'
 require 'carrierwave/storage/ftp/ex_ftp'
+require 'carrierwave/storage/ftp/ex_ftptls'
 
 module CarrierWave
   module Storage
@@ -91,7 +92,12 @@ module CarrierWave
         private
 
         def connection
-          ftp = ExFTP.new
+          if @uploader.ftp_tls
+            ftp = ExFTPTLS.new
+            ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+          else
+            ftp = ExFTP.new
+          end
           ftp.connect(@uploader.ftp_host, @uploader.ftp_port)
 
           begin
@@ -118,6 +124,7 @@ class CarrierWave::Uploader::Base
   add_config :ftp_folder
   add_config :ftp_url
   add_config :ftp_passive
+  add_config :ftp_tls
 
   configure do |config|
     config.storage_engines[:ftp] = "CarrierWave::Storage::FTP"
@@ -128,5 +135,6 @@ class CarrierWave::Uploader::Base
     config.ftp_folder = "/"
     config.ftp_url = "http://localhost"
     config.ftp_passive = false
+    config.ftp_tls = false
   end
 end
