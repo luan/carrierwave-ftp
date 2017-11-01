@@ -26,6 +26,7 @@ module CarrierWave
             ftp.mkdir_p(::File.dirname "#{@uploader.ftp_folder}/#{path}")
             ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
             ftp.put(file.path, filename)
+            ftp.sendcmd("SITE CHMOD #{@uploader.permissions.to_s(8)} #{@uploader.ftp_folder}/#{path}")
           end
         end
 
