@@ -26,6 +26,7 @@ describe CarrierWave::Storage::FTP do
   it "opens/closes a secure ftp connection to the given host" do
     ftp = double(:ftp_connection)
     Net::FTP.should_receive(:new).and_return(ftp)
+    ftp.should_receive(:sendcmd)
     ftp.should_receive(:ssl_context=)
     ftp.should_receive(:connect).with('ftp.testcarrierwave.dev', 21)
     ftp.should_receive(:login).with('test_user', 'test_passwd')
