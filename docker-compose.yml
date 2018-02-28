@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  gem:
+    build: .
+    volumes:
+      - .:/gem
+      - bundler:/usr/local/bundle
+
+volumes:
+  bundler:
