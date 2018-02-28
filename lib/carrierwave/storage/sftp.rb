@@ -69,7 +69,7 @@ module CarrierWave
         end
 
         def content_type
-          @content_type || file.content_type
+          @content_type || inferred_content_type
         end
 
         def content_type=(new_content_type)
@@ -84,6 +84,10 @@ module CarrierWave
         end
 
         private
+
+        def inferred_content_type
+          SanitizedFile.new(path).content_type
+        end
 
         def use_ssl?
           @uploader.sftp_url.start_with?('https')

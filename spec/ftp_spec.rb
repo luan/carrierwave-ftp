@@ -140,8 +140,7 @@ describe CarrierWave::Storage::FTP do
     end
 
     it "returns the content_type of the file" do
-      @stored.should_receive(:file).and_return(Struct.new(:content_type).new('some/type'))
-      @stored.content_type.should == 'some/type'
+      @stored.content_type.should == 'image/jpeg'
     end
   end
 end
