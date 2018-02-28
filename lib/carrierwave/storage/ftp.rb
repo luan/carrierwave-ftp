@@ -27,7 +27,9 @@ module CarrierWave
             ftp.mkdir_p(::File.dirname "#{@uploader.ftp_folder}/#{path}")
             ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
             ftp.put(file.path, filename)
-            ftp.sendcmd("SITE CHMOD #{@uploader.permissions.to_s(8)} #{@uploader.ftp_folder}/#{path}")
+            if @uploader.ftp_chmod
+              ftp.sendcmd("SITE CHMOD #{@uploader.permissions.to_s(8)} #{@uploader.ftp_folder}/#{path}")
+            end
           end
         end
 
@@ -126,6 +128,7 @@ class CarrierWave::Uploader::Base
   add_config :ftp_url
   add_config :ftp_passive
   add_config :ftp_tls
+  add_config :ftp_chmod
 
   configure do |config|
     config.storage_engines[:ftp] = "CarrierWave::Storage::FTP"
@@ -137,5 +140,6 @@ class CarrierWave::Uploader::Base
     config.ftp_url = "http://localhost"
     config.ftp_passive = false
     config.ftp_tls = false
+    config.ftp_chmod = true
   end
 end
