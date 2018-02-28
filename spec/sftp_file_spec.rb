@@ -1,10 +1,6 @@
 require 'spec_helper'
 require 'carrierwave/storage/sftp'
 
-class SftpUploader < CarrierWave::Uploader::Base
-  storage :sftp
-end
-
 describe CarrierWave::Storage::SFTP::File do
   let(:uploader) do
     Class.new(CarrierWave::Uploader::Base) do

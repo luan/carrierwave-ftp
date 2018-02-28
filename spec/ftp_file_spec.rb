@@ -1,10 +1,6 @@
 require 'spec_helper'
 require 'carrierwave/storage/ftp'
 
-class FtpUploader < CarrierWave::Uploader::Base
-  storage :ftp
-end
-
 describe CarrierWave::Storage::FTP::File do
   let(:uploader) do
     Class.new(CarrierWave::Uploader::Base) do
