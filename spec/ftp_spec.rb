@@ -19,7 +19,7 @@ describe CarrierWave::Storage::FTP do
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
-    FtpUploader.stub(:store_path).and_return('uploads/test.jpg')
+    allow(FtpUploader).to receive(:store_path).and_return('uploads/test.jpg')
     @storage = CarrierWave::Storage::FTP.new(FtpUploader)
   end
 
@@ -32,15 +32,15 @@ describe CarrierWave::Storage::FTP do
       21
     ]
 
-    Net::FTP.should_receive(:new).and_return(ftp)
-    ftp.should_receive(:connect).with('ftp.testcarrierwave.dev', 21)
-    ftp.should_receive(:login).with('test_user', 'test_passwd')
-    ftp.should_receive(:passive=).with(true)
-    ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
-    ftp.should_receive(:chdir).with('~/public_html/uploads')
-    ftp.should_receive(:put).with(@file.path, 'test.jpg')
-    ftp.should_receive(:sendcmd).with("SITE CHMOD 644 ~/public_html/uploads/test.jpg")
-    ftp.should_receive(:quit)
+    expect(Net::FTP).to receive(:new).and_return(ftp)
+    expect(ftp).to receive(:connect).with('ftp.testcarrierwave.dev', 21)
+    expect(ftp).to receive(:login).with('test_user', 'test_passwd')
+    expect(ftp).to receive(:passive=).with(true)
+    expect(ftp).to receive(:mkdir_p).with('~/public_html/uploads')
+    expect(ftp).to receive(:chdir).with('~/public_html/uploads')
+    expect(ftp).to receive(:put).with(@file.path, 'test.jpg')
+    expect(ftp).to receive(:sendcmd).with("SITE CHMOD 644 ~/public_html/uploads/test.jpg")
+    expect(ftp).to receive(:quit)
     @stored = @storage.store!(@file)
   end
 
@@ -60,14 +60,14 @@ describe CarrierWave::Storage::FTP do
         21
       ]
 
-      Net::FTP.should_receive(:new).and_return(ftp)
-      ftp.should_receive(:connect).with('ftp.testcarrierwave.dev', 21)
-      ftp.should_receive(:login).with('test_user', 'test_passwd')
-      ftp.should_receive(:passive=).with(true)
-      ftp.should_receive(:mkdir_p).with('~/public_html/uploads')
-      ftp.should_receive(:chdir).with('~/public_html/uploads')
-      ftp.should_receive(:put).with(@file.path, 'test.jpg')
-      ftp.should_receive(:quit)
+      expect(Net::FTP).to receive(:new).and_return(ftp)
+      expect(ftp).to receive(:connect).with('ftp.testcarrierwave.dev', 21)
+      expect(ftp).to receive(:login).with('test_user', 'test_passwd')
+      expect(ftp).to receive(:passive=).with(true)
+      expect(ftp).to receive(:mkdir_p).with('~/public_html/uploads')
+      expect(ftp).to receive(:chdir).with('~/public_html/uploads')
+      expect(ftp).to receive(:put).with(@file.path, 'test.jpg')
+      expect(ftp).to receive(:quit)
       @stored = @storage.store!(@file)
     end
   end
@@ -75,72 +75,72 @@ describe CarrierWave::Storage::FTP do
   describe 'after upload' do
     before do
       ftp = double(:ftp_connection)
-      Net::FTP.stub(:new).and_return(ftp)
-      ftp.stub(:connect)
-      ftp.stub(:login)
-      ftp.stub(:passive=)
-      ftp.stub(:mkdir_p)
-      ftp.stub(:chdir)
-      ftp.stub(:put)
-      ftp.stub(:sendcmd)
-      ftp.stub(:quit)
+      allow(Net::FTP).to receive(:new).and_return(ftp)
+      allow(ftp).to receive(:connect)
+      allow(ftp).to receive(:login)
+      allow(ftp).to receive(:passive=)
+      allow(ftp).to receive(:mkdir_p)
+      allow(ftp).to receive(:chdir)
+      allow(ftp).to receive(:put)
+      allow(ftp).to receive(:sendcmd)
+      allow(ftp).to receive(:quit)
       @stored = @storage.store!(@file)
     end
 
     it "returns a url based on directory" do
-      @stored.url.should == 'http://testcarrierwave.dev/uploads/test.jpg'
+      expect(@stored.url).to eq 'http://testcarrierwave.dev/uploads/test.jpg'
     end
 
     it "returns a path based on directory" do
-      @stored.path.should == 'uploads/test.jpg'
+      expect(@stored.path).to eq 'uploads/test.jpg'
     end
   end
 
   describe 'other operations' do
     before do
       @ftp = double(:ftp_connection)
-      Net::FTP.stub(:new).and_return(@ftp)
-      @ftp.stub(:connect)
-      @ftp.stub(:login)
-      @ftp.stub(:passive=)
-      @ftp.stub(:mkdir_p)
-      @ftp.stub(:chdir)
-      @ftp.stub(:put)
-      @ftp.stub(:sendcmd)
-      @ftp.stub(:quit)
+      allow(Net::FTP).to receive(:new).and_return(@ftp)
+      allow(@ftp).to receive(:connect)
+      allow(@ftp).to receive(:login)
+      allow(@ftp).to receive(:passive=)
+      allow(@ftp).to receive(:mkdir_p)
+      allow(@ftp).to receive(:chdir)
+      allow(@ftp).to receive(:put)
+      allow(@ftp).to receive(:sendcmd)
+      allow(@ftp).to receive(:quit)
       @stored = @storage.store!(@file)
     end
 
     it "deletes a file" do
-      @ftp.should_receive(:chdir).with('~/public_html/uploads')
-      @ftp.should_receive(:delete).with('test.jpg')
+      expect(@ftp).to receive(:chdir).with('~/public_html/uploads')
+      expect(@ftp).to receive(:delete).with('test.jpg')
       @stored.delete
     end
 
     it "checks whether a file exists" do
-      @stored.should_receive(:size).and_return(10)
-      @stored.exists?.should == true
+      expect(@stored).to receive(:size).and_return(10)
+      expect(@stored.exists?).to eq true
     end
 
     it "returns the size of the file" do
-      @ftp.should_receive(:size).and_return(14)
-      @stored.size.should == 14
+      expect(@ftp).to receive(:size).and_return(14)
+      expect(@stored.size).to eq 14
     end
 
     it "returns to_file" do
-      @ftp.should_receive(:chdir).with('~/public_html/uploads')
-      @ftp.should_receive(:get).with('test.jpg', nil).and_yield('some content')
-      @stored.to_file.size.should == 'some content'.length
+      expect(@ftp).to receive(:chdir).with('~/public_html/uploads')
+      expect(@ftp).to receive(:get).with('test.jpg', nil).and_yield('some content')
+      expect(@stored.to_file.size).to eq 'some content'.length
     end
 
     it "returns the content of the file" do
-      @ftp.should_receive(:chdir).with('~/public_html/uploads')
-      @ftp.should_receive(:get).with('test.jpg', nil).and_yield('some content')
-      @stored.read.should == 'some content'
+      expect(@ftp).to receive(:chdir).with('~/public_html/uploads')
+      expect(@ftp).to receive(:get).with('test.jpg', nil).and_yield('some content')
+      expect(@stored.read).to eq 'some content'
     end
 
     it "returns the content_type of the file" do
-      @stored.content_type.should == 'image/jpeg'
+      expect(@stored.content_type).to eq 'image/jpeg'
     end
   end
 end

@@ -20,7 +20,7 @@ describe CarrierWave::Storage::SFTP do
     end
 
     @file = CarrierWave::SanitizedFile.new(file_path('test.jpg'))
-    SftpUploader.stub(:store_path).and_return('uploads/test.jpg')
+    allow(SftpUploader).to receive(:store_path).and_return('uploads/test.jpg')
     @storage = CarrierWave::Storage::SFTP.new(SftpUploader)
   end
 
@@ -35,74 +35,74 @@ describe CarrierWave::Storage::SFTP do
       }
     ]
 
-    Net::SFTP.should_receive(:start).with(*sftp_params).and_return(sftp)
-    sftp.should_receive(:mkdir_p!).with('/home/test_user/public_html/uploads')
-    sftp.should_receive(:upload!).with(@file.path, '/home/test_user/public_html/uploads/test.jpg')
-    sftp.should_receive(:close_channel)
+    expect(Net::SFTP).to receive(:start).with(*sftp_params).and_return(sftp)
+    expect(sftp).to receive(:mkdir_p!).with('/home/test_user/public_html/uploads')
+    expect(sftp).to receive(:upload!).with(@file.path, '/home/test_user/public_html/uploads/test.jpg')
+    expect(sftp).to receive(:close_channel)
     @stored = @storage.store!(@file)
   end
 
   describe 'after upload' do
     before do
       @sftp = double(:sftp_connection)
-      Net::SFTP.stub(:start).and_return(@sftp)
-      @sftp.stub(:mkdir_p!)
-      @sftp.stub(:upload!)
-      @sftp.stub(:close_channel)
+      allow(Net::SFTP).to receive(:start).and_return(@sftp)
+      allow(@sftp).to receive(:mkdir_p!)
+      allow(@sftp).to receive(:upload!)
+      allow(@sftp).to receive(:close_channel)
       @stored = @storage.store!(@file)
     end
 
     it "should use the ftp when retrieving a file" do
-      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
+      expect(@sftp).to receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
       @stored.read
     end
 
     it "returns a url based on directory" do
-      @stored.url.should == 'http://testcarrierwave.dev/uploads/test.jpg'
+      expect(@stored.url).to eq 'http://testcarrierwave.dev/uploads/test.jpg'
     end
 
     it "returns a path based on directory" do
-      @stored.path.should == 'uploads/test.jpg'
+      expect(@stored.path).to eq 'uploads/test.jpg'
     end
   end
 
   describe 'other operations' do
     before do
       @sftp = double(:sftp_connection)
-      Net::SFTP.stub(:start).and_return(@sftp)
-      @sftp.stub(:mkdir_p!)
-      @sftp.stub(:upload!)
-      @sftp.stub(:close_channel)
+      allow(Net::SFTP).to receive(:start).and_return(@sftp)
+      allow(@sftp).to receive(:mkdir_p!)
+      allow(@sftp).to receive(:upload!)
+      allow(@sftp).to receive(:close_channel)
       @stored = @storage.store!(@file)
     end
 
     it "deletes a file" do
-      @sftp.should_receive(:remove!).with('/home/test_user/public_html/uploads/test.jpg')
+      expect(@sftp).to receive(:remove!).with('/home/test_user/public_html/uploads/test.jpg')
       @stored.delete
     end
 
     it "checks whether a file exists" do
-      @stored.should_receive(:size).and_return(10)
-      @stored.exists?.should == true
+      expect(@stored).to receive(:size).and_return(10)
+      expect(@stored.exists?).to eq true
     end
 
     it "returns the size of the file" do
-      @sftp.should_receive(:stat!).with('/home/test_user/public_html/uploads/test.jpg').and_return(Struct.new(:size).new(14))
-      @stored.size.should == 14
+      expect(@sftp).to receive(:stat!).with('/home/test_user/public_html/uploads/test.jpg').and_return(Struct.new(:size).new(14))
+      expect(@stored.size).to eq 14
     end
 
     it "returns to_file" do
-      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
-      @stored.to_file.size.should == 0
+      expect(@sftp).to receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
+      expect(@stored.to_file.size).to eq 0
     end
 
     it "returns the content of the file" do
-      @sftp.should_receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
-      @stored.read.should == ''
+      expect(@sftp).to receive(:download!).with(@stored.send(:full_path), kind_of(Tempfile))
+      expect(@stored.read).to eq ''
     end
 
     it "returns the content_type of the file" do
-      @stored.content_type.should == 'image/jpeg'
+      expect(@stored.content_type).to eq 'image/jpeg'
     end
   end
 end
