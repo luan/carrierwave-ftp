@@ -25,12 +25,6 @@ describe CarrierWave::Storage::FTP do
 
   it 'opens/closes an ftp connection to the given host' do
     ftp = double(:ftp_connection)
-    ftp_params = [
-      'ftp.testcarrierwave.dev',
-      'test_user',
-      'test_passwd',
-      21
-    ]
 
     expect(Net::FTP).to receive(:new).and_return(ftp)
     expect(ftp).to receive(:connect).with('ftp.testcarrierwave.dev', 21)
@@ -39,7 +33,8 @@ describe CarrierWave::Storage::FTP do
     expect(ftp).to receive(:mkdir_p).with('~/public_html/uploads')
     expect(ftp).to receive(:chdir).with('~/public_html/uploads')
     expect(ftp).to receive(:put).with(@file.path, 'test.jpg')
-    expect(ftp).to receive(:sendcmd).with('SITE CHMOD 644 ~/public_html/uploads/test.jpg')
+    expect(ftp).to receive(:sendcmd)
+      .with('SITE CHMOD 644 ~/public_html/uploads/test.jpg')
     expect(ftp).to receive(:quit)
     @stored = @storage.store!(@file)
   end
@@ -53,12 +48,6 @@ describe CarrierWave::Storage::FTP do
 
     it 'opens/closes an ftp connection to the given host' do
       ftp = double(:ftp_connection)
-      ftp_params = [
-        'ftp.testcarrierwave.dev',
-        'test_user',
-        'test_passwd',
-        21
-      ]
 
       expect(Net::FTP).to receive(:new).and_return(ftp)
       expect(ftp).to receive(:connect).with('ftp.testcarrierwave.dev', 21)
@@ -129,13 +118,17 @@ describe CarrierWave::Storage::FTP do
 
     it 'returns to_file' do
       expect(@ftp).to receive(:chdir).with('~/public_html/uploads')
-      expect(@ftp).to receive(:get).with('test.jpg', nil).and_yield('some content')
-      expect(@stored.to_file.size).to eq 'some content'.length
+      expect(@ftp).to receive(:get)
+        .with('test.jpg', nil)
+        .and_yield('some content')
+      expect(@stored.to_file.size).to eq 12
     end
 
     it 'returns the content of the file' do
       expect(@ftp).to receive(:chdir).with('~/public_html/uploads')
-      expect(@ftp).to receive(:get).with('test.jpg', nil).and_yield('some content')
+      expect(@ftp).to receive(:get)
+        .with('test.jpg', nil)
+        .and_yield('some content')
       expect(@stored.read).to eq 'some content'
     end
 

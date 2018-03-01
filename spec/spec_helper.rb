@@ -24,7 +24,9 @@ module CarrierWave
       end
 
       def stub_tempfile(filename, mime_type = nil, fake_name = nil)
-        raise "#{path} file does not exist" unless File.exist?(file_path(filename))
+        unless File.exist?(file_path(filename))
+          raise "#{path} file does not exist"
+        end
 
         t = Tempfile.new(filename)
         FileUtils.copy_file(file_path(filename), t.path)

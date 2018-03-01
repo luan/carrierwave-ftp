@@ -5,13 +5,17 @@ module CarrierWave
   module Storage
     class SFTP < Abstract
       def store!(file)
-        f = CarrierWave::Storage::SFTP::File.new(uploader, self, uploader.store_path)
-        f.store(file)
-        f
+        ftp_file(uploader.store_path).tap { |f| f.store(file) }
       end
 
       def retrieve!(identifier)
-        CarrierWave::Storage::SFTP::File.new(uploader, self, uploader.store_path(identifier))
+        ftp_file(uploader.store_path(identifier))
+      end
+
+      private
+
+      def ftp_file(path)
+        CarrierWave::Storage::SFTP::File.new(uploader, self, path)
       end
 
       class File
@@ -35,7 +39,7 @@ module CarrierWave
         end
 
         def filename(_options = {})
-          url.gsub(/.*\/(.*?$)/, '\1')
+          url.gsub(%r{.*\/(.*?$)}, '\1')
         end
 
         def to_file
@@ -81,6 +85,7 @@ module CarrierWave
             sftp.remove!(full_path)
           end
         rescue StandardError
+          nil
         end
 
         private
@@ -98,7 +103,11 @@ module CarrierWave
         end
 
         def connection
-          sftp = Net::SFTP.start(@uploader.sftp_host, @uploader.sftp_user, @uploader.sftp_options)
+          sftp = Net::SFTP.start(
+            @uploader.sftp_host,
+            @uploader.sftp_user,
+            @uploader.sftp_options
+          )
           yield sftp
           sftp.close_channel
         end
@@ -109,19 +118,23 @@ end
 
 CarrierWave::Storage.autoload :SFTP, 'carrierwave/storage/sftp'
 
-class CarrierWave::Uploader::Base
-  add_config :sftp_host
-  add_config :sftp_user
-  add_config :sftp_options
-  add_config :sftp_folder
-  add_config :sftp_url
+module CarrierWave
+  module Uploader
+    class Base
+      add_config :sftp_host
+      add_config :sftp_user
+      add_config :sftp_options
+      add_config :sftp_folder
+      add_config :sftp_url
 
-  configure do |config|
-    config.storage_engines[:sftp] = 'CarrierWave::Storage::SFTP'
-    config.sftp_host = 'localhost'
-    config.sftp_user = 'anonymous'
-    config.sftp_options = {}
-    config.sftp_folder = ''
-    config.sftp_url = 'http://localhost'
+      configure do |config|
+        config.storage_engines[:sftp] = 'CarrierWave::Storage::SFTP'
+        config.sftp_host = 'localhost'
+        config.sftp_user = 'anonymous'
+        config.sftp_options = {}
+        config.sftp_folder = ''
+        config.sftp_url = 'http://localhost'
+      end
+    end
   end
 end

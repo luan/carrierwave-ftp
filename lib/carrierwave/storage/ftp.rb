@@ -6,13 +6,17 @@ module CarrierWave
   module Storage
     class FTP < Abstract
       def store!(file)
-        f = CarrierWave::Storage::FTP::File.new(uploader, self, uploader.store_path)
-        f.store(file)
-        f
+        ftp_file(uploader.store_path).tap { |f| f.store(file) }
       end
 
       def retrieve!(identifier)
-        CarrierWave::Storage::FTP::File.new(uploader, self, uploader.store_path(identifier))
+        ftp_file(uploader.store_path(identifier))
+      end
+
+      private
+
+      def ftp_file(path)
+        CarrierWave::Storage::FTP::File.new(uploader, self, path)
       end
 
       class File
@@ -29,10 +33,15 @@ module CarrierWave
             ftp.mkdir_p(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             ftp.chdir(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             ftp.put(file.path, filename)
-            if @uploader.ftp_chmod
-              ftp.sendcmd("SITE CHMOD #{@uploader.permissions.to_s(8)} #{@uploader.ftp_folder}/#{path}")
-            end
+            chmod(ftp) if @uploader.ftp_chmod
           end
+        end
+
+        def chmod(ftp)
+          ftp.sendcmd(
+            "SITE CHMOD #{@uploader.permissions.to_s(8)} " \
+            "#{@uploader.ftp_folder}/#{path}"
+          )
         end
 
         def url
@@ -40,7 +49,7 @@ module CarrierWave
         end
 
         def filename(_options = {})
-          url.gsub(/.*\/(.*?$)/, '\1')
+          url.gsub(%r{.*\/(.*?$)}, '\1')
         end
 
         def to_file
@@ -90,6 +99,7 @@ module CarrierWave
             ftp.delete(filename)
           end
         rescue StandardError
+          nil
         end
 
         private
@@ -98,23 +108,27 @@ module CarrierWave
           SanitizedFile.new(path).content_type
         end
 
-        def connection
+        def ftp_conn
           if @uploader.ftp_tls
             ftp = ExFTPTLS.new
-            ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
+            ftp.ssl_context = DoubleBagFTPS.create_ssl_context(
+              verify_mode: OpenSSL::SSL::VERIFY_NONE
+            )
           else
             ftp = ExFTP.new
           end
           ftp.connect(@uploader.ftp_host, @uploader.ftp_port)
+          ftp
+        end
 
-          begin
-            ftp.passive = @uploader.ftp_passive
-            ftp.login(@uploader.ftp_user, @uploader.ftp_passwd)
+        def connection
+          ftp = ftp_conn
+          ftp.passive = @uploader.ftp_passive
+          ftp.login(@uploader.ftp_user, @uploader.ftp_passwd)
 
-            yield ftp
-          ensure
-            ftp.quit
-          end
+          yield ftp
+        ensure
+          ftp.quit
         end
       end
     end
@@ -123,27 +137,31 @@ end
 
 CarrierWave::Storage.autoload :FTP, 'carrierwave/storage/ftp'
 
-class CarrierWave::Uploader::Base
-  add_config :ftp_host
-  add_config :ftp_port
-  add_config :ftp_user
-  add_config :ftp_passwd
-  add_config :ftp_folder
-  add_config :ftp_url
-  add_config :ftp_passive
-  add_config :ftp_tls
-  add_config :ftp_chmod
+module CarrierWave
+  module Uploader
+    class Base
+      add_config :ftp_host
+      add_config :ftp_port
+      add_config :ftp_user
+      add_config :ftp_passwd
+      add_config :ftp_folder
+      add_config :ftp_url
+      add_config :ftp_passive
+      add_config :ftp_tls
+      add_config :ftp_chmod
 
-  configure do |config|
-    config.storage_engines[:ftp] = 'CarrierWave::Storage::FTP'
-    config.ftp_host = 'localhost'
-    config.ftp_port = 21
-    config.ftp_user = 'anonymous'
-    config.ftp_passwd = ''
-    config.ftp_folder = '/'
-    config.ftp_url = 'http://localhost'
-    config.ftp_passive = false
-    config.ftp_tls = false
-    config.ftp_chmod = true
+      configure do |config|
+        config.storage_engines[:ftp] = 'CarrierWave::Storage::FTP'
+        config.ftp_host = 'localhost'
+        config.ftp_port = 21
+        config.ftp_user = 'anonymous'
+        config.ftp_passwd = ''
+        config.ftp_folder = '/'
+        config.ftp_url = 'http://localhost'
+        config.ftp_passive = false
+        config.ftp_tls = false
+        config.ftp_chmod = true
+      end
+    end
   end
 end

@@ -3,11 +3,11 @@ require 'carrierwave/storage/sftp'
 
 describe CarrierWave::Storage::SFTP::File do
   let(:uploader) do
-    Class.new(CarrierWave::Uploader::Base) do
+    uploader = Class.new(CarrierWave::Uploader::Base) do
       storage :sftp
-    end.tap do |u|
-      allow(u).to receive(:store_path).and_return('uploads/test.jpg')
     end
+    allow(uploader).to receive(:store_path).and_return('uploads/test.jpg')
+    uploader
   end
 
   let(:base) { CarrierWave::Storage::SFTP.new(uploader) }
@@ -21,8 +21,9 @@ describe CarrierWave::Storage::SFTP::File do
   describe '#content_type' do
     it 'delegates to base file by default' do
       sanitized_file = CarrierWave::SanitizedFile.new(file)
-      expect(CarrierWave::SanitizedFile).to receive(:new).with(file.path)
-                                                         .and_return(sanitized_file)
+      expect(CarrierWave::SanitizedFile).to receive(:new)
+        .with(file.path)
+        .and_return(sanitized_file)
       expect(sanitized_file).to receive(:content_type).and_return(mime_type)
 
       expect(file.content_type).to eq(mime_type)
