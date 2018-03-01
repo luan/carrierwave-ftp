@@ -18,12 +18,14 @@ module CarrierWave
         attr_reader :path
 
         def initialize(uploader, base, path)
-          @uploader, @base, @path = uploader, base, path
+          @uploader = uploader
+          @base = base
+          @path = path
         end
 
         def store(file)
           connection do |sftp|
-            sftp.mkdir_p!(::File.dirname full_path)
+            sftp.mkdir_p!(::File.dirname(full_path))
             sftp.upload!(file.path, full_path)
           end
         end
@@ -32,7 +34,7 @@ module CarrierWave
           "#{@uploader.sftp_url}/#{path}"
         end
 
-        def filename(options = {})
+        def filename(_options = {})
           url.gsub(/.*\/(.*?$)/, '\1')
         end
 
@@ -72,15 +74,13 @@ module CarrierWave
           @content_type || inferred_content_type
         end
 
-        def content_type=(new_content_type)
-          @content_type = new_content_type
-        end
+        attr_writer :content_type
 
         def delete
           connection do |sftp|
             sftp.remove!(full_path)
           end
-        rescue
+        rescue StandardError
         end
 
         private
@@ -117,11 +117,11 @@ class CarrierWave::Uploader::Base
   add_config :sftp_url
 
   configure do |config|
-    config.storage_engines[:sftp] = "CarrierWave::Storage::SFTP"
-    config.sftp_host = "localhost"
-    config.sftp_user = "anonymous"
+    config.storage_engines[:sftp] = 'CarrierWave::Storage::SFTP'
+    config.sftp_host = 'localhost'
+    config.sftp_user = 'anonymous'
     config.sftp_options = {}
-    config.sftp_folder = ""
-    config.sftp_url = "http://localhost"
+    config.sftp_folder = ''
+    config.sftp_url = 'http://localhost'
   end
 end

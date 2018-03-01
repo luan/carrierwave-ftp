@@ -19,13 +19,15 @@ module CarrierWave
         attr_reader :path
 
         def initialize(uploader, base, path)
-          @uploader, @base, @path = uploader, base, path
+          @uploader = uploader
+          @base = base
+          @path = path
         end
 
         def store(file)
           connection do |ftp|
-            ftp.mkdir_p(::File.dirname "#{@uploader.ftp_folder}/#{path}")
-            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.mkdir_p(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
+            ftp.chdir(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             ftp.put(file.path, filename)
             if @uploader.ftp_chmod
               ftp.sendcmd("SITE CHMOD #{@uploader.permissions.to_s(8)} #{@uploader.ftp_folder}/#{path}")
@@ -37,7 +39,7 @@ module CarrierWave
           "#{@uploader.ftp_url}/#{path}"
         end
 
-        def filename(options = {})
+        def filename(_options = {})
           url.gsub(/.*\/(.*?$)/, '\1')
         end
 
@@ -45,7 +47,7 @@ module CarrierWave
           temp_file = Tempfile.new(filename)
           temp_file.binmode
           connection do |ftp|
-            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.chdir(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             ftp.get(filename, nil) do |data|
               temp_file.write(data)
             end
@@ -58,7 +60,7 @@ module CarrierWave
           size = nil
 
           connection do |ftp|
-            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.chdir(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             size = ftp.size(filename)
           end
 
@@ -80,16 +82,14 @@ module CarrierWave
           @content_type || inferred_content_type
         end
 
-        def content_type=(new_content_type)
-          @content_type = new_content_type
-        end
+        attr_writer :content_type
 
         def delete
           connection do |ftp|
-            ftp.chdir(::File.dirname "#{@uploader.ftp_folder}/#{path}")
+            ftp.chdir(::File.dirname("#{@uploader.ftp_folder}/#{path}"))
             ftp.delete(filename)
           end
-        rescue
+        rescue StandardError
         end
 
         private
@@ -101,7 +101,7 @@ module CarrierWave
         def connection
           if @uploader.ftp_tls
             ftp = ExFTPTLS.new
-            ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+            ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
           else
             ftp = ExFTP.new
           end
@@ -135,13 +135,13 @@ class CarrierWave::Uploader::Base
   add_config :ftp_chmod
 
   configure do |config|
-    config.storage_engines[:ftp] = "CarrierWave::Storage::FTP"
-    config.ftp_host = "localhost"
+    config.storage_engines[:ftp] = 'CarrierWave::Storage::FTP'
+    config.ftp_host = 'localhost'
     config.ftp_port = 21
-    config.ftp_user = "anonymous"
-    config.ftp_passwd = ""
-    config.ftp_folder = "/"
-    config.ftp_url = "http://localhost"
+    config.ftp_user = 'anonymous'
+    config.ftp_passwd = ''
+    config.ftp_folder = '/'
+    config.ftp_url = 'http://localhost'
     config.ftp_passive = false
     config.ftp_tls = false
     config.ftp_chmod = true

@@ -24,7 +24,7 @@ describe CarrierWave::Storage::FTP do
     @storage = CarrierWave::Storage::FTP.new(FtpTlsUploader)
   end
 
-  it "opens/closes a secure ftp connection to the given host" do
+  it 'opens/closes a secure ftp connection to the given host' do
     ftp = double(:ftp_connection)
     expect(Net::FTP).to receive(:new).and_return(ftp)
     expect(ftp).to receive(:sendcmd)
@@ -46,7 +46,7 @@ describe CarrierWave::Storage::FTP do
       end
     end
 
-    it "opens/closes a secure ftp connection to the given host" do
+    it 'opens/closes a secure ftp connection to the given host' do
       ftp = double(:ftp_connection)
       expect(Net::FTP).to receive(:new).and_return(ftp)
       expect(ftp).to receive(:ssl_context=)

@@ -21,8 +21,8 @@ describe CarrierWave::Storage::FTP::File do
   describe '#content_type' do
     it 'delegates to base file by default' do
       sanitized_file = CarrierWave::SanitizedFile.new(file)
-      expect(CarrierWave::SanitizedFile).to receive(:new).with(file.path).
-        and_return(sanitized_file)
+      expect(CarrierWave::SanitizedFile).to receive(:new).with(file.path)
+                                                         .and_return(sanitized_file)
       expect(sanitized_file).to receive(:content_type).and_return(mime_type)
 
       expect(file.content_type).to eq(mime_type)

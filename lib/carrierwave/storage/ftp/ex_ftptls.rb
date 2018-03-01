@@ -2,19 +2,19 @@ require 'double_bag_ftps'
 
 class ExFTPTLS < DoubleBagFTPS
   def mkdir_p(dir)
-    parts = dir.split("/")
-    if parts.first == "~"
-      growing_path = ""
-    else
-      growing_path = "/"
-    end
+    parts = dir.split('/')
+    growing_path = if parts.first == '~'
+                     ''
+                   else
+                     '/'
+                   end
     for part in parts
-      next if part == ""
-      if growing_path == ""
-        growing_path = part
-      else
-        growing_path = File.join(growing_path, part)
-      end
+      next if part == ''
+      growing_path = if growing_path == ''
+                       part
+                     else
+                       File.join(growing_path, part)
+                     end
       begin
         mkdir(growing_path)
         chdir(growing_path)

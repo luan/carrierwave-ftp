@@ -8,7 +8,7 @@ class Net::SFTP::Session
       growing_parts.push(part)
       begin
         mkdir!(File.join(growing_parts))
-      rescue
+      rescue StandardError
       end
     end
   end
