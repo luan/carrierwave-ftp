@@ -5,4 +5,7 @@ Metrics/BlockLength:
   Enabled: false
 Documentation:
   Enabled: false
+Naming/FileName:
+  Exclude:
+    - carrierwave-ftp.gemspec
 
