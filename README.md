@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/luan/carrierwave-ftp.svg?branch=master)](https://travis-ci.org/luan/carrierwave-ftp)
 [![Code Climate](https://codeclimate.com/github/luan/carrierwave-ftp/badges/gpa.svg)](https://codeclimate.com/github/luan/carrierwave-ftp)
-[![Dependency Status](https://gemnasium.com/luan/carrierwave-ftp.png)](https://gemnasium.com/luan/carrierwave-ftp)
 
 This gem adds support for FTP upload to [CarrierWave](https://github.com/jnicklas/carrierwave/)
 
@@ -14,13 +13,29 @@ Install the latest release:
 
 Require it in your code:
 
-    require 'carrierwave/storage/ftp'
+```ruby
+require 'carrierwave/storage/ftp'
+```
 
-Or, in Rails you can add it to your Gemfile:
+Or, with Bundler, you can add it to your `Gemfile`. Here are three different ways.
 
-    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp/all' # both FTP/SFTP
-    gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp' # FTP only
-    gem 'carrierwave-ftp', :require => 'carrierwave/storage/sftp' # SFTP only
+### Both FTP and SFTP
+
+```ruby
+gem 'carrierwave-ftp', require: 'carrierwave/storage/ftp/all'
+```
+
+### FTP only
+
+```ruby
+gem 'carrierwave-ftp', require: 'carrierwave/storage/ftp'
+```
+
+### SFTP only
+
+```ruby
+gem 'carrierwave-ftp', require: 'carrierwave/storage/sftp'
+```
 
 ## Getting Started (FTP)
 
