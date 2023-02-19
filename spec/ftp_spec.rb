@@ -108,7 +108,7 @@ describe CarrierWave::Storage::FTP do
 
     it 'checks whether a file exists' do
       expect(@stored).to receive(:size).and_return(10)
-      expect(@stored.exists?).to eq true
+      expect(@stored.exist?).to eq true
     end
 
     it 'returns the size of the file' do
