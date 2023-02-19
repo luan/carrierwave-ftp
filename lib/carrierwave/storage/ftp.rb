@@ -76,7 +76,7 @@ module CarrierWave
           size
         end
 
-        def exists?
+        def exist?
           size ? true : false
         end
 
