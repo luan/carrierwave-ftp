@@ -36,6 +36,7 @@ CarrierWave.configure do |config|
   config.ftp_url = "http://example.com/uploads"
   config.ftp_passive = false # false by default
   config.ftp_tls = false # false by default
+  # config.ftp_chmod = false #if 504 error is appearing
 end
 ```
 
